@@ -1,0 +1,8 @@
+## Interface: 20100
+## Title: VenantesOptions
+## Deps: Venantes
+## Author: Zirah
+## DefaultState: Enabled
+## LoadOnDemand: 1
+VenantesOptions.xml
+VenantesOptions.lua
