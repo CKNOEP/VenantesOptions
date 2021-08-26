@@ -238,14 +238,15 @@ function VenantesOptions:ShowTooltip(element, elementId, anchor)
             end
         end
     elseif elementId == 'SKIN' then   
-        local skinName = SphereButtons:SphereGetSkinName(element:GetValue()); 
-        if skinName ~= nil then
+        local skinName = SphereButtons:SphereGetSkinName(math.floor(element:GetValue() + 0.5)); 
+
+		if skinName ~= nil then
             GameTooltip:AddLine(skinName);
         else 
             GameTooltip:AddLine('Solid');
         end
     elseif elementId == 'SPHERE_CIRCLE' then   
-        local circleStatus = SphereButtons:SphereGetStatusInfo(element:GetValue(), nil); 
+        local circleStatus = SphereButtons:SphereGetStatusInfo(math.floor(element:GetValue() + 0.5), nil); 
         if circleStatus ~= nil then
             if L['STATUS_'..circleStatus] ~= nil then
                 GameTooltip:AddLine(L['STATUS_'..circleStatus]);
@@ -256,7 +257,7 @@ function VenantesOptions:ShowTooltip(element, elementId, anchor)
             GameTooltip:AddLine(L['NONE']);
         end
     elseif elementId == 'SPHERE_TEXT' then   
-        local _, textStatus = SphereButtons:SphereGetStatusInfo(nil, element:GetValue()); 
+        local _, textStatus = SphereButtons:SphereGetStatusInfo(nil, math.floor(element:GetValue() + 0.5)); 
         if textStatus ~= nil then
             if L['STATUS_'..textStatus] ~= nil then
                 GameTooltip:AddLine(L['STATUS_'..textStatus]);
@@ -296,12 +297,17 @@ function VenantesOptions:Invalidate(status, positions, dragable)
 end
 
 function VenantesOptions:SetOptionSlider(element, optionName) 
-   print ("Set Slider " , element:GetName(), optionName) 
-   print(math.floor(Venantes.db.profile[optionName]+0.5))
-  -- print(Venantes.db.profile[optionName])
+
    local optionValue = math.floor(element:GetValue()+ 0.5);
     Venantes.db.profile[optionName] = optionValue;
 end
+
+function VenantesOptions:RoundValueSlider(input)
+ 
+ return math.floor(input + 0.5);
+ 
+end
+
 
 function VenantesOptions:SetOptionCheckbox(element, optionName) 
     local checked = element:GetChecked();
