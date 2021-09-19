@@ -12,8 +12,9 @@
 VenantesOptions = {};
 local SphereCore = LibStub:GetLibrary("SphereCore-3.0");
 local SphereButtons = LibStub:GetLibrary("SphereButtons-2.0");
-local L = LibStub("AceLocale-3.0"):GetLocale('Venantes');
 
+local L = LibStub("AceLocale-3.0"):GetLocale('Venantes');
+local SphereInventory = LibStub:GetLibrary("SphereInventory-2.0");
 
 VenantesOptions.tabFrameNames = { 'Sphere', 'Buttons', 'Messages', 'Inventory', 'Debug' };
 
@@ -208,34 +209,72 @@ function VenantesOptions:TabButtonClick(tabId, tabTitle)
 end
 
 function VenantesOptions:ShowTooltip(element, elementId, anchor)  
-    if not self.initialized then
+  
+	if not self.initialized then
         return;
     end
 
     GameTooltip:SetOwner(element, anchor);
+	
  
     -- show value
     if elementId == 'VALUE' then    
         GameTooltip:AddLine(element:GetValue());
-    elseif elementId == 'ACTION_VALUE' then    
-        local actionIdx = element:GetValue();
+   
+   elseif elementId == 'ACTION_VALUE' then -- The 3 Buttons    
+        local actionIdx = math.floor(element:GetValue()+ 0.5);
         local actionType, actionName, _, _, _, _, actionSlotName = SphereButtons:ButtonGetActionInfo(actionIdx);
-        if actionType == 'slot' and actionSlotName then
+        
+		
+		
+		if actionType == 'slot' and actionSlotName then
             local actionPrefix = actionSlotName;
             if L['SLOT_'..actionSlotName] ~= nil then
                 actionPrefix = L['SLOT_'..actionSlotName];
             end
             if actionName ~= nil then
-                GameTooltip:AddLine(actionPrefix..': '..actionName);
-            else 
+            --GameTooltip:AddLine(actionPrefix..': '..actionName);
+            GameTooltip:AddDoubleLine(actionPrefix..': '..actionName, " ", 1, 1, 1, 1, 1, 1)
+			--GameTooltip:AddDoubleLine("|T"..134532..":0|t ", " ", 1, 1, 1, 1, 1, 1)
+			-- Texture
+		
+			--GameTooltip:AddTexture(134532)
+			GameTooltip:AddLine(actionPrefix);
+			GameTooltip:AddTexture(132329, {width = 32, height = 32})
+				
+			else 
                 GameTooltip:AddLine(actionPrefix..': '..L['NONE']);
             end            
         else
-            if actionName ~= nil then
-                GameTooltip:AddLine(actionName);
-            else 
+           
+		   local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(actionName)
+		   
+		   
+			for i = 1, GetNumSpellTabs() do
+				local _, _, offset, numSlots = GetSpellTabInfo(i)
+				for j = offset+1, offset+numSlots do
+					
+				
+				local spell_name = select(2,GetSpellBookItemInfo(j, BOOKTYPE_SPELL))
+				local namespell_name = select(1,GetSpellInfo(spell_name))
+		   
+				if name == namespell_name then
+				print(i, j, GetSpellBookItemInfo(j, BOOKTYPE_SPELL),name,namespell_name)
+				ID_BOOKTYPE_SPELL = j
+				end
+				
+				end
+			end
+		   
+		   
+		   
+		   if actionName ~= nil then
+                --GameTooltip:AddDoubleLine(actionName, " ", 1, 1, 1, 1, 1, 1)
+    			--GameTooltip:AddTexture(132329, {width = 32, height = 32})       
+				GameTooltip:SetSpellBookItem(ID_BOOKTYPE_SPELL,BOOKTYPE_SPELL)
+		   else 
                 GameTooltip:AddLine(L['NONE']);
-            end
+           end
         end
     elseif elementId == 'SKIN' then   
         local skinName = SphereButtons:SphereGetSkinName(math.floor(element:GetValue() + 0.5)); 
@@ -269,7 +308,7 @@ function VenantesOptions:ShowTooltip(element, elementId, anchor)
         end        
     -- get directly from localisation
     elseif elementId == 'MSG_LANGUAGE' then
-        GameTooltip:AddLine(SphereCore:GetSpeechLanguage(element:GetValue()));
+        GameTooltip:AddLine(SphereCore:GetSpeechLanguage(math.floor(element:GetValue()+ 0.5)));
     elseif L[elementId] ~= nil then    
         GameTooltip:AddLine(L[elementId]);
     end
@@ -299,7 +338,8 @@ end
 function VenantesOptions:SetOptionSlider(element, optionName) 
 
    local optionValue = math.floor(element:GetValue()+ 0.5);
-    Venantes.db.profile[optionName] = optionValue;
+   
+	Venantes.db.profile[optionName] = optionValue;
 end
 
 function VenantesOptions:RoundValueSlider(input)
@@ -333,4 +373,7 @@ function VenantesOptions:OnDebugItemDrop()
             SphereCore:ShowMessage('Sorry, but this works only in WoW >= 2.0.3', 'USER');
         end
     end
+end
+function VenantesOptions:InventoryScan() 
+SphereInventory:InventoryScan() 
 end

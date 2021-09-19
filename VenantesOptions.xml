@@ -693,7 +693,7 @@
                         <Scripts>
                             <OnClick>
                                 VenantesOptions:SetOptionCheckbox(VenantesOptionsCheckButton_DrinkWeakest, 'buttonDrinkWeakest');
-                                Venantes:InventoryScan();
+                                VenantesOptions:InventoryScan();
                                 VenantesOptions:Invalidate(true, true, false);
                             </OnClick>
                         </Scripts>
@@ -730,7 +730,7 @@
                         <Scripts>
                             <OnClick>
                                 VenantesOptions:SetOptionCheckbox(VenantesOptionsCheckButton_PotionWeakest, 'buttonPotionWeakest');
-                                Venantes:InventoryScan();
+                                VenantesOptions:InventoryScan();
                                 VenantesOptions:Invalidate(true, true, false);
                             </OnClick>
                         </Scripts>
